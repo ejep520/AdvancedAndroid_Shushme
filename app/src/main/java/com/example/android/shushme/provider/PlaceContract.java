@@ -19,7 +19,7 @@ package com.example.android.shushme.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class PlaceContract {
+public class PlaceContract implements BaseColumns{
 
     // The authority, which is how your code knows which Content Provider to access
     public static final String AUTHORITY = "com.example.android.shushme";

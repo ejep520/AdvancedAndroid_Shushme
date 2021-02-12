@@ -11,16 +11,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.-->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="24dp"
         android:orientation="vertical">
 
         <TextView
@@ -45,12 +44,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="4dp"
-                android:paddingRight="8dp"
                 android:paddingTop="4dp"
-                android:src="@drawable/ic_globe_primary_24dp" />
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:src="@drawable/ic_globe_primary_24dp"
+                android:contentDescription="@string/image_view_globe" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/enable_switch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -59,6 +60,26 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_my_location_primary_24dp" />
+
+            <CheckBox
+                android:id="@+id/location_permission_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layoutDirection="rtl"
+                android:text="@string/location_permission_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+
+        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -67,7 +88,8 @@
             android:background="@color/colorPrimary"
             android:text="@string/add_new_location"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="onAddPlaceButtonClick"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -83,11 +105,12 @@
             android:layout_marginTop="4dp"
             android:background="@color/colorPrimary" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/places_list_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</layout>

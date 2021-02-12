@@ -24,7 +24,8 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import static com.example.android.shushme.provider.PlaceContract.PlaceEntry;
 
@@ -39,7 +40,7 @@ public class PlaceContentProvider extends ContentProvider {
 
     // Declare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private static final String TAG = PlaceContentProvider.class.getName();
+    // private static final String TAG = PlaceContentProvider.class.getName();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
     public static UriMatcher buildUriMatcher() {
@@ -63,10 +64,6 @@ public class PlaceContentProvider extends ContentProvider {
 
     /***
      * Handles requests to insert a single new row of data
-     *
-     * @param uri
-     * @param values
-     * @return
      */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
@@ -75,19 +72,15 @@ public class PlaceContentProvider extends ContentProvider {
         // Write URI matching code to identify the match for the places directory
         int match = sUriMatcher.match(uri);
         Uri returnUri; // URI to be returned
-        switch (match) {
-            case PLACES:
-                // Insert new values into the database
-                long id = db.insert(PlaceEntry.TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(PlaceContract.PlaceEntry.CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                break;
-            // Default case throws an UnsupportedOperationException
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match != PLACES) {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Insert new values into the database
+        long id = db.insert(PlaceEntry.TABLE_NAME, null, values);
+        if (id > 0) {
+            returnUri = ContentUris.withAppendedId(PlaceContract.PlaceEntry.CONTENT_URI, id);
+        } else {
+            throw new android.database.SQLException("Failed to insert row into " + uri);
         }
 
         // Notify the resolver if the uri has been changed, and return the newly inserted URI
@@ -99,13 +92,6 @@ public class PlaceContentProvider extends ContentProvider {
 
     /***
      * Handles requests for data by URI
-     *
-     * @param uri
-     * @param projection
-     * @param selection
-     * @param selectionArgs
-     * @param sortOrder
-     * @return
      */
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
@@ -118,21 +104,16 @@ public class PlaceContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         Cursor retCursor;
 
-        switch (match) {
-            // Query for the places directory
-            case PLACES:
-                retCursor = db.query(PlaceEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
-            // Default exception
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match != PLACES) {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        retCursor = db.query(PlaceEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
 
         // Set a notification URI on the Cursor and return that Cursor
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -143,11 +124,6 @@ public class PlaceContentProvider extends ContentProvider {
 
     /***
      * Deletes a single row of data
-     *
-     * @param uri
-     * @param selection
-     * @param selectionArgs
-     * @return number of rows affected
      */
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
@@ -156,17 +132,13 @@ public class PlaceContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         // Keep track of the number of deleted places
         int placesDeleted; // starts as 0
-        switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
-            case PLACE_WITH_ID:
-                // Get the place ID from the URI path
-                String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                placesDeleted = db.delete(PlaceEntry.TABLE_NAME, "_id=?", new String[]{id});
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match != PLACE_WITH_ID) {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        // Get the place ID from the URI path
+        String id = Long.valueOf(ContentUris.parseId(uri)).toString();
+        // Use selections/selectionArgs to filter for this ID
+        placesDeleted = db.delete(PlaceEntry.TABLE_NAME, "_id=?", new String[]{id});
         // Notify the resolver of a change and return the number of items deleted
         if (placesDeleted != 0) {
             // A place (or more) was deleted, set notification
@@ -178,11 +150,6 @@ public class PlaceContentProvider extends ContentProvider {
 
     /***
      * Updates a single row of data
-     *
-     * @param uri
-     * @param selection
-     * @param selectionArgs
-     * @return number of rows affected
      */
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
@@ -193,17 +160,14 @@ public class PlaceContentProvider extends ContentProvider {
         // Keep track of the number of updated places
         int placesUpdated;
 
-        switch (match) {
-            case PLACE_WITH_ID:
-                // Get the place ID from the URI path
-                String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                placesUpdated = db.update(PlaceEntry.TABLE_NAME, values, "_id=?", new String[]{id});
-                break;
-            // Default exception
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match != PLACE_WITH_ID) {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
+        // Get the place ID from the URI path
+        String id = uri.getPathSegments().get(1);
+        // Use selections/selectionArgs to filter for this ID
+        placesUpdated = db.update(PlaceEntry.TABLE_NAME, values, "_id=?", new String[]{id});
 
         // Notify the resolver of a change and return the number of items updated
         if (placesUpdated != 0) {
@@ -213,7 +177,6 @@ public class PlaceContentProvider extends ContentProvider {
         // Return the number of places deleted
         return placesUpdated;
     }
-
 
     @Override
     public String getType(@NonNull Uri uri) {

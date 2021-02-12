@@ -17,11 +17,13 @@ package com.example.android.shushme;
 */
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.PlaceViewHolder> {
 
@@ -43,8 +45,9 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
      * @param viewType The view type of the new View
      * @return A new PlaceViewHolder that holds a View with the item_place_card layout
      */
+    @NonNull
     @Override
-    public PlaceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_place_card, parent, false);
@@ -58,7 +61,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
      * @param position The current position that needs to be loaded with data
      */
     @Override
-    public void onBindViewHolder(PlaceViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
 
     }
 
@@ -76,16 +79,15 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
     /**
      * PlaceViewHolder class for the recycler view item
      */
-    class PlaceViewHolder extends RecyclerView.ViewHolder {
+    static class PlaceViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameTextView;
         TextView addressTextView;
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
-            nameTextView = (TextView) itemView.findViewById(R.id.name_text_view);
-            addressTextView = (TextView) itemView.findViewById(R.id.address_text_view);
+            nameTextView = itemView.findViewById(R.id.name_text_view);
+            addressTextView = itemView.findViewById(R.id.address_text_view);
         }
-
     }
 }

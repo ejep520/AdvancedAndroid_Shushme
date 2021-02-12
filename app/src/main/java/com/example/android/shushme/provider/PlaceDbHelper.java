@@ -20,6 +20,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.shushme.provider.PlaceContract.PlaceEntry;
 
 public class PlaceDbHelper extends SQLiteOpenHelper {
@@ -36,7 +38,7 @@ public class PlaceDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(@NonNull SQLiteDatabase sqLiteDatabase) {
 
         // Create a table to hold the places data
         final String SQL_CREATE_PLACES_TABLE = "CREATE TABLE " + PlaceEntry.TABLE_NAME + " (" +
@@ -49,7 +51,7 @@ public class PlaceDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(@NonNull SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // For now simply drop the table and create a new one.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PlaceEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
